@@ -113,7 +113,7 @@ public class RayTracer {
             //Handle specular
             Color3f specular = new Color3f(hit.material.Ks.x  * lightIntens.x, hit.material.Ks.y * lightIntens.y, hit.material.Ks.z * lightIntens.z);
             Vector3f reflected = reflect(lightDir, hit.normal);
-            Vector3f ray_opp = new Vector3f(ray.d.x * -1, ray.d.y * -1, ray.d.z * -1);
+            Vector3f ray_opp = new Vector3f(ray.getDirection().x * -1, ray.getDirection().y * -1, ray.getDirection().z * -1);
             ray_opp.normalize();
             specular.scale((float) Math.pow(Math.max(reflected.dot(ray_opp), 0), hit.material.phong_exp));
             color.add(specular);
