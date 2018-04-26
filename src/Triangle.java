@@ -37,10 +37,16 @@ public class Triangle extends Shape {
 		n2 = new Vector3f(_n2);
 	}
 	public HitRecord hit(Ray ray, float tmin, float tmax) {
-
-		/* YOUR WORK HERE: complete the triangle's intersection routine
-		 * Normal should be computed by a bilinear interpolation from n0, n1 and n2
-		 * using the barycentric coordinates: alpha, beta, (1.0 - alpha - beta) */
-		return null;
+                Vector3f pn = new Vector3f();
+		Vector3f p1_p0 = new Vector3f(p1.x - p0.x, p1.y - p0.y, p1.z - p0.z);
+                Vector3f p2_p0 = new Vector3f(p2.x - p0.x, p2.y - p0.y, p2.z - p0.z);
+                pn.cross(p1_p0, p2_p0);
+                pn.normalize();
+                Shape plane = new Plane(p0, pn, material);
+                HitRecord hit = plane.hit(ray, tmin, tmax);
+                if (hit == null) {
+                    return null;
+                }
+		return hit;
 	}
 }
