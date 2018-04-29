@@ -55,7 +55,7 @@ public class Triangle extends Shape {
                 rec.pos = ray.pointAt(t);		// position of hit point
                 rec.t = t;						// parameter t (distance along the ray)
                 rec.material = material;		// material
-                rec.normal = new Vector3f(n0);					// normal at the hit point
+                rec.normal = new Vector3f(n0.x + (beta * n1.x) + (gamma * n2.x), n0.y + (beta * n1.y) + (gamma * n2.y), n0.z + (beta * n1.z) + (gamma * n2.z));					// normal at the hit point
                 rec.normal.normalize();			// normal should be normalized
                 return rec;
         }
