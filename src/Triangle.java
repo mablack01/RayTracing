@@ -36,17 +36,27 @@ public class Triangle extends Shape {
 		n1 = new Vector3f(_n1);
 		n2 = new Vector3f(_n2);
 	}
+        
+        
 	public HitRecord hit(Ray ray, float tmin, float tmax) {
-                Vector3f pn = new Vector3f();
-		Vector3f p1_p0 = new Vector3f(p1.x - p0.x, p1.y - p0.y, p1.z - p0.z);
-                Vector3f p2_p0 = new Vector3f(p2.x - p0.x, p2.y - p0.y, p2.z - p0.z);
-                pn.cross(p1_p0, p2_p0);
-                pn.normalize();
-                Shape plane = new Plane(p0, pn, material);
-                HitRecord hit = plane.hit(ray, tmin, tmax);
-                if (hit == null) {
+                Vector3f origin = ray.getOrigin();
+		Vector3f direction = ray.getDirection();
+                Matrix3f matrix = new Matrix3f(direction.x, p0.x - p1.x, p0.x - p2.x, direction.y, p0.y - p1.y, p0.y - p2.y, direction.z, p0.z - p1.z, p0.z - p2.z);
+                Matrix3f beta_matrix = new Matrix3f(direction.x, p0.x - origin.x, p0.x - p2.x, direction.y, p0.y - origin.y, p0.y - p2.y, direction.z, p0.z - origin.z, p0.z - p2.z);
+                Matrix3f gamma_matrix = new Matrix3f(direction.x, p0.x - p1.x, p0.x - origin.x, direction.y, p0.y - p1.y, p0.y - origin.y, direction.z, p0.z - p1.z, p0.z - origin.z);
+                Matrix3f t_matrix = new Matrix3f(p0.x - origin.x, p0.x - p1.x, p0.x - p2.x, p0.y - origin.y, p0.y - p1.y, p0.y - p2.y, p0.z - origin.z, p0.z - p1.z, p0.z - p2.z);
+                float beta = (float) beta_matrix.determinant() / matrix.determinant();
+                float gamma = (float) gamma_matrix.determinant() / matrix.determinant();
+                float t = (float) t_matrix.determinant() / matrix.determinant();
+                if (t < tmin || t > tmax || beta < 0 || gamma < 0 || beta + gamma > 1) {
                     return null;
                 }
-		return hit;
-	}
+                HitRecord rec = new HitRecord();
+                rec.pos = ray.pointAt(t);		// position of hit point
+                rec.t = t;						// parameter t (distance along the ray)
+                rec.material = material;		// material
+                rec.normal = new Vector3f(n0);					// normal at the hit point
+                rec.normal.normalize();			// normal should be normalized
+                return rec;
+        }
 }
