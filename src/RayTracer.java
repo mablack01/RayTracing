@@ -287,10 +287,18 @@ public class RayTracer {
 
 		} else if (lighttype.compareToIgnoreCase("area")==0) {
 
-			/* YOUR WORK HERE: complete the area light
-			 * Note that you do not need to create a new type of light source.
-			 * Instead, you will convert an area light
-			 * to a collection of point lights and add them all to the 'lights' array */
+			/* add a new area light */
+                        Vector3f pos = new Vector3f(scanner.nextFloat(), scanner.nextFloat(), scanner.nextFloat());
+                        float size = scanner.nextFloat();
+                        float x = scanner.nextFloat();
+                        float y = scanner.nextFloat();
+			Color3f intens = new Color3f(scanner.nextFloat(), scanner.nextFloat(), scanner.nextFloat());
+                        intens.scale(1 / x / y);
+                        for (int i = 0; i < x; i++) {
+                            for (int j = 0; j < y; j++) {
+                                lights.add(new PointLight(new Vector3f(pos.x - size / 2 + size / x * i, pos.y, pos.z - size / 2 + size / y * j), intens));
+                            }
+                        }
 
 		} else {
 			System.out.println("undefined light type: " + lighttype);
